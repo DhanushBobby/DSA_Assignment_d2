@@ -1,78 +1,41 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+
 using namespace std;
 
-#define ll long long
-#define vi(T) vector<T>
-#define pr(i,j) pair<i,j>
-#define all(vec) vec.begin(), vec.end()
-#define pb push_back
-#define ppb pop_back
-#define ff first
-#define ss second
-#define f(i,A,B) for(long long i=A;i<B;i++)
-#define M 1000000007
-
-// output
-#define input(vec) for(auto &i:vec)cin>>i
-#define output(vec) for(auto &i:vec){cout<<i<<" ";}cout<<"\n"
-#define outputpair1(vec) for(auto &i:vec){cout<<"{"<<i.first<<" "<<i.second<<"} ";}cout<<"\n"
-#define outputpair2(vec) for(auto &i:vec){cout<<i.first<<" "<<i.second<<"\n";}
-#define google(i) cout<<"Case #"<<i<<": "
-
-// Function
-ll gcd(ll a, ll b) {if (a == 0) {return b;} return gcd(b % a, a);}
-ll power(ll a, ll b) {
-    //a ki power b
-    ll ans = 1; ll mul = a;
-    while (b > 0) {if (b & 1) {ans *= mul;} mul = mul * mul; b >>= 1;}
-    return ans;
-}
-unsigned ll SetBits(unsigned ll n) {
-    unsigned ll count = 0;
-    while (n) {count += n & 1; n >>= 1;}
-    return count;
-}
-
-// Code start
-const ll N = 1e5;
-ll n, m, k, num;
-ll a, b, c, d;
-string s;
-
-void solve(ll ts) {
-    string t;
-    cin >> s >> t;
-    map<char, char> mp;
-    map<char, int> vec;
-    int n = t.size();
-    for (int i = 0; i < n; i++) {
-        if (mp.find(s[i]) != mp.end()) {
-            if (mp[s[i]] != t[i]) {
-                cout<<"NO\n";return;
+bool areIsomorphic(string s, string t) {
+    if (s.size() != t.size()) {
+        return false;
+    }
+    unordered_map<char, char> mapping;
+    unordered_set<char> used;
+    for (int i = 0; i < s.size(); i++) {
+        if (mapping.find(s[i]) == mapping.end()) {
+            if (used.find(t[i]) != used.end()) {
+                return false;
             }
+            mapping[s[i]] = t[i];
+            used.insert(t[i]);
         } else {
-            if (vec.find(t[i]) != vec.end()) {
-                cout<<"NO\n";return;
+            if (mapping[s[i]] != t[i]) {
+                return false;
             }
-            mp[s[i]] = t[i];
-            vec[t[i]] = 1;
         }
     }
-
-    cout<<"YES\n";
+    return true;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-    // your code goes here
-    ll t = 1;
-    cin >> t;
-    // while(t--)solve();
-    ll i = 0;
-    f(i, 0, t) {
-        solve(i + 1);
+    string s, t;
+    cout << "Enter the first string: ";
+    getline(cin, s);
+    cout << "Enter the second string: ";
+    getline(cin, t);
+    if (areIsomorphic(s, t)) {
+        cout << "The strings are isomorphic." << endl;
+    } else {
+        cout << "The strings are not isomorphic." << endl;
     }
     return 0;
 }
