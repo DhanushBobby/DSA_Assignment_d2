@@ -1,94 +1,60 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cstring>
 using namespace std;
 
-#define ll long long
-#define vi(T) vector<T>
-#define pr(i,j) pair<i,j>
-#define all(vec) vec.begin(), vec.end()
-#define pb push_back
-#define ppb pop_back
-#define ff first
-#define ss second
-#define f(i,A,B) for(long long i=A;i<B;i++)
-#define M 1000000007
-
-// output
-#define input(vec) for(auto &i:vec)cin>>i
-#define output(vec) for(auto &i:vec){cout<<i<<" ";}cout<<"\n"
-#define outputpair1(vec) for(auto &i:vec){cout<<"{"<<i.first<<" "<<i.second<<"} ";}cout<<"\n"
-#define outputpair2(vec) for(auto &i:vec){cout<<i.first<<" "<<i.second<<"\n";}
-#define google(i) cout<<"Case #"<<i<<": "
-
-// Function
-ll gcd(ll a, ll b) {if (a == 0) {return b;} return gcd(b % a, a);}
-ll power(ll a, ll b) {
-    //a ki power b
-    ll ans = 1; ll mul = a;
-    while (b > 0) {if (b & 1) {ans *= mul;} mul = mul * mul; b >>= 1;}
-    return ans;
-}
-unsigned ll SetBits(unsigned ll n) {
-    unsigned ll count = 0;
-    while (n) {count += n & 1; n >>= 1;}
-    return count;
+void printLCS(char* s1, char* s2, int len1, int len2, int** dp) {
+    if (len1 == 0 || len2 == 0) {
+        return;
+    }
+    if (s1[len1 - 1] == s2[len2 - 1]) {
+        printLCS(s1, s2, len1 - 1, len2 - 1, dp);
+        cout << s1[len1 - 1];
+    }
+    else if (dp[len1 - 1][len2] > dp[len1][len2 - 1]) {
+        printLCS(s1, s2, len1 - 1, len2, dp);
+    }
+    else {
+        printLCS(s1, s2, len1, len2 - 1, dp);
+    }
 }
 
-// Code start
-const ll N = 1e5;
-ll n, m, k, num;
-ll a, b, c, d;
-string s;
+int longestCommonSubsequence(char* s1, char* s2) {
+    int len1 = strlen(s1);
+    int len2 = strlen(s2);
 
-void solve(ll ts) {
-    string t;
-    cin >> s >> t;
-    n= s.size(),m=t.size();
-
-    ll dp[n+1][m+1];
-
-    f(i,0,n+1){
-        f(j,0,m+1){
-            if(i==0 || j==0){
-                dp[i][j]=0;
-            }else if(s[i-1]==t[j-1]){
-                dp[i][j]=1+dp[i-1][j-1];
-            }else{
-                dp[i][j] = max(dp[i-1][j],dp[i][j-1]);
+    int** dp = new int*[len1 + 1];
+    for (int i = 0; i <= len1; i++) {
+        dp[i] = new int[len2 + 1];
+        for (int j = 0; j <= len2; j++) {
+            if (i == 0 || j == 0) {
+                dp[i][j] = 0;
+            }
+            else if (s1[i - 1] == s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            }
+            else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
 
-    cout<<dp[n][m]<<"\n";
+    printLCS(s1, s2, len1, len2, dp);
 
-    ll i=n,j=m;
-    string temp;
-    while(i>0 && j>0){
-        if(s[i-1]==t[j-1]){
-            // cout<<temp<<"\n";
-            temp.push_back(s[i-1]);
-            i--;j--;
-        }
-        else if(dp[i-1][j] > dp[i][j-1]){
-            i-=1;
-        }else{
-            j-=1;
-        }
+    int result = dp[len1][len2];
+
+    for (int i = 0; i <= len1; i++) {
+        delete[] dp[i];
     }
-    reverse(all(temp));
-    cout<<temp<<"\n";
+    delete[] dp;
+
+    return result;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-    // your code goes here
-    ll t = 1;
-    cin >> t;
-    // while(t--)solve();
-    ll i = 0;
-    f(i, 0, t) {
-        solve(i + 1);
-    }
+    char s1[] = "AGGTAB";
+    char s2[] = "GXTXAYB";
+
+    cout << "LCS length: " << longestCommonSubsequence(s1, s2) << endl;
+
     return 0;
 }
